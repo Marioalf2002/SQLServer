@@ -607,3 +607,21 @@ FROM Meses m
 WHERE ISNULL(c.Contrataciones, 0) = 0
 ORDER BY m.Mes
 GO
+
+-- Elabore una consulta que reciba el código de un empleado y regrese sus datos completos.
+
+DECLARE @idEmpleado int
+SET @idEmpleado = 1
+SELECT *
+from RRHH.EMPLEADOS
+where IdEmpleado = @idEmpleado
+GO
+
+--  Elabore una consulta que reciba la fecha actual y retorne el nombre de todos los empleados que cumplen años en el mes.
+
+DECLARE @fechaActual DATE
+SET @fechaActual = GETDATE()
+SELECT *
+from RRHH.EMPLEADOS
+where MONTH(fecNac) = MONTH(@fechaActual)
+GO
