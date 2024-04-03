@@ -625,3 +625,91 @@ SELECT *
 from RRHH.EMPLEADOS
 where MONTH(fecNac) = MONTH(@fechaActual)
 GO
+
+-- Triggers
+
+CREATE TRIGGER TX_Productos
+ON COMPRA.PRODUCTOS
+FOR INSERT, UPDATE, DELETE
+AS
+PRINT 'Actualizacion de los registros de productos'
+GO
+
+INSERT INTO COMPRA.PRODUCTOS
+VALUES
+    (6, 'Jabón de manos', 1, 2, 500, 2300, 3500, 700)
+GO
+
+UPDATE COMPRA.PRODUCTOS
+SET precioUnidad = precioUnidad * 1.15
+WHERE IdProducto = 2
+GO
+
+DELETE FROM COMPRA.PRODUCTOS
+WHERE IdProducto = 6
+GO
+
+ALTER TRIGGER TX_Productos
+ON COMPRA.PRODUCTOS
+FOR INSERT, UPDATE, DELETE
+AS
+PRINT UPPER('Actualizacion de los registros de productos')
+GO
+
+DROP TRIGGER TX_Productos
+GO
+
+CREATE TRIGGER TX_Productos_Inserta
+ON COMPRA.PRODUCTOS
+FOR INSERT
+AS
+IF (SELECT COUNT(*)
+FROM inserted, COMPRA.PRODUCTOS
+WHERE inserted.nomProducto = COMPRA.PRODUCTOS.nomProducto) > 1
+    BEGIN
+    PRINT 'No se puede insertar el producto, ya existe'
+    ROLLBACK TRANSACTION
+END
+ELSE
+    PRINT 'Producto insertado'
+GO
+
+SELECT *
+FROM COMPRA.PRODUCTOS
+GO
+
+INSERT INTO COMPRA.PRODUCTOS
+    (IdProducto, nomProducto, idProveedor, idCategoria, cantxUnidad, precioUnidad, UniEnExistencia, UniEnPedido)
+VALUES
+    (8, 'Jabón de manos', 1, 2, 500, 2300, 3500, 700)
+GO
+
+CREATE TRIGGER TX_ELIMINA
+ON VENDOR
+FOR DELETE
+AS
+IF EXISTS ( SELECT *
+FROM PRODUCT
+WHERE V_CODE =( SELECT V_CODE
+FROM DELETED ) )
+    BEGIN
+    PRINT 'No se puede eliminar el proveedor, tiene productos asociados'
+    ROLLBACK TRANSACTION
+END
+ELSE
+    PRINT 'Proveedor eliminado'
+GO
+
+CREATE TRIGGER TX_Productos_Actualiza
+ON PRODUCT
+FOR UPDATE
+AS
+IF (SELECT P_PRICE
+    FROM INSERTED) <= 0 OR (SELECT P_PRICE
+    FROM INSERTED) <= 0
+    BEGIN
+    PRINT 'El precio del producto no puede ser menor o igual a 0 o mayor a 1000'
+    ROLLBACK TRANSACTION
+END
+ELSE
+    PRINT 'Producto actualizado'
