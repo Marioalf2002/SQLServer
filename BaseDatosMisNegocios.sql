@@ -713,3 +713,39 @@ IF (SELECT P_PRICE
 END
 ELSE
     PRINT 'Producto actualizado'
+GO
+
+-- 1. Cree un mensaje de error con código 50005, nivel de severidad 14 y el mensaje: 'Usted no está autorizado para realizar modificaciones en esta tabla'.
+
+EXEC sp_addmessage 50005, 14, 'Usted no está autorizado para realizar modificaciones en esta tabla'
+GO
+
+--  2. Cree un trigger  instead of en la tabla COMPRA.PRODUCTOS que busque realizar un UPDATE  en cualquier registro. El trigger deberá alzar el error anteriormente creado.
+
+DROP TRIGGER IF EXISTS TX_Productos_Actualiza
+GO
+
+CREATE TRIGGER TX_Productos_Actualiza
+ON COMPRA.PRODUCTOS
+INSTEAD OF UPDATE
+AS
+RAISERROR(50005, 14, 1)
+GO
+
+--  3. Elabore un procedimiento almacenado que reciba el código de un producto e intente realizar un UPDATE  en la tabla utilizada en el punto 2. Se deberá disparar este trigger evitando la actualización de la tabla. 
+
+DROP PROCEDURE IF EXISTS ActualizaProducto
+GO
+
+CREATE PROCEDURE ActualizaProducto
+    @IdProducto INT
+AS
+UPDATE COMPRA.PRODUCTOS
+SET precioUnidad = precioUnidad * 1.15
+WHERE IdProducto = @IdProducto
+GO
+
+-- 4. Organize los tres puntos anteriores en una sola sentencia que pueda ser corrido como una sola consulta. Este será el único punto que se revisará. 
+
+EXEC ActualizaProducto 2;
+GO

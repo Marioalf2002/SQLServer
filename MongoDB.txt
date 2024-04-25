@@ -1,0 +1,19 @@
+# Comandos para MongoDB en la terminal
+
+show dbs  # Muestra las bases de datos
+use MyDB_Prueba # Crea una base de datos
+db.users.insertOne({name: "Mario"}) # Crea una colección y un documento
+db.users.find() # Muestra los documentos de la colección
+
+show collections # Muestra las colecciones
+db.getCollectionNames() # Muestra las colecciones
+
+db.products.drop() # Elimina una colección
+db.dropDatabase() # Elimina una base de datos
+ 
+db.users.insertMany([{name:"Juan", age:"10"},{name:"Sara",age:"12"}]) # Inserta varios documentos
+db.users.find().limit(2) # Limita la cantidad de documentos a mostrar
+db.users.find().sort({name:1}) # Ordena los documentos
+db.users.find({name:"Mario"}) # Busca un documento
+db.users.find({name:"Mario"}, {name: 1})  # Muestra solo el campo name
+db.users.find({name:"Mario"}, {name: 1, _id:0})  # Muestra solo el campo name y excluye el _id

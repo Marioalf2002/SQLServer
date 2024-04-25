@@ -1,0 +1,20 @@
+[
+  {
+    "nombre": "Juan Perez",
+    "edad": 25,
+    "correo": "juan@example.com",
+    "carrera": "Ingeniería Informática"
+  },
+  {
+    "nombre": "María García",
+    "edad": 28,
+    "correo": "maria@example.com",
+    "carrera": "Diseño Gráfico"
+  },
+  {
+    "nombre": "Luis Martínez",
+    "edad": 30,
+    "correo": "luis@example.com",
+    "carrera": "Medicina"
+  }
+]
